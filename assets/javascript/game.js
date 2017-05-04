@@ -1,14 +1,14 @@
-var obiWanKenobi;
-var lukeSkywalker;
-var darthSidious;
-var darthMaul
-
-var characterSelection = [];
-var character = null;
-var defenders = [];
-var defender = null;
-
 $(document).ready(function () {
+
+	var obiWanKenobi;
+	var quiGonJinn;
+	var countDooku;
+	var darthVader;
+
+	var characterSelection = [];
+	var character = null;
+	var defenders = [];
+	var defender = null;
 
 	function startGame() {
 		obiWanKenobi = {
@@ -18,37 +18,37 @@ $(document).ready(function () {
 			baseAttack:10,
 			attackPower: 10,
 			counterAttackPower: 8,
-			img:"http://placehold.it/200x150"
+			img:"assets/images/obi-wan-kenobi.jpg"
 		}
 
-		lukeSkywalker = {
+		quiGonJinn = {
 			id: 1,
-			name: "Luke Skywalker",
+			name: "Qui-Gon Jinn",
 			healthPoints: 100,
 			baseAttack: 8,
 			attackPower: 8,
 			counterAttackPower: 5,
-			img:"http://placehold.it/200x150"
+			img:"assets/images/qui-gon-jinn.jpeg"
 		}
 
-		darthSidious = {
+		countDooku = {
 			id: 2,
-			name: "Darth Sidious",
+			name: "Count Dooku",
 			healthPoints: 150,
 			baseAttack:9,
 			attackPower: 9,
 			counterAttackPower: 10,
-			img:"http://placehold.it/200x150"
+			img:"assets/images/count-dooku.png"
 		}
 
-		darthMaul = {
+		darthVader = {
 			id: 3,
-			name: "Darth Maul",
+			name: "Darth Vader",
 			healthPoints: 100,
 			baseAttack: 12,
 			attackPower: 12,
 			counterAttackPower: 12,
-			img:"http://placehold.it/200x150"
+			img:"assets/images/darth-vader.jpg"
 		}
 		// reset character selected
 		character = null;
@@ -60,24 +60,28 @@ $(document).ready(function () {
 		defender = null;
 
 		// reset character selections
-		characterSelection = [obiWanKenobi,lukeSkywalker,darthSidious,darthMaul]
+		characterSelection = [obiWanKenobi,quiGonJinn,countDooku,darthVader];
 
 		// clears all character divs
 		$("#character").empty();
 		$("#defenderArea").empty();
 		$("#defender").empty();
+		$("#status").empty();
 
 		$.each(characterSelection, function(index, character) {
 			// create a div for each character to display character selection at start of the game
-			var newCharacterDiv = $("<div>").addClass("character").attr("id",character.id);
-			newCharacterDiv.append(character.name+"<br>");
-			newCharacterDiv.append("<img src='" + character.img + "'><br>");
-			newCharacterDiv.append("<span class='hp'>" + character.healthPoints + "</span>");
+			var newCharacterDiv = $("<div>").addClass("character panel panel-success").attr("id",character.id);
 
+			$("<div>").addClass("panel-heading").html(character.name).appendTo(newCharacterDiv);
+			$("<div>").addClass("panel-body").append("<img src='" + character.img + "'>").appendTo(newCharacterDiv);
+			$("<div>").addClass("panel-footer").append("<span class='hp'>" + character.healthPoints + "</span>").appendTo(newCharacterDiv);
+
+			// append new div to character selection
 			$("#characterSelection").append(newCharacterDiv);
 		});
 
 		$(".character").on("click", function() {
+			// when character has been selected
 			if(character === null) {
 				console.log("picked character");
 				//get id of character selected
@@ -85,11 +89,12 @@ $(document).ready(function () {
 
 				character = characterSelection[charId];
 
+				// loop through character array
 				$.each(characterSelection, function(index, character) {
 					// add unselected characters to enemies array
 					if(character.id !== charId) {
 						defenders.push(character);
-						$("#"+character.id).removeClass("character").addClass("defender").appendTo("#defenderArea");
+						$("#"+character.id).removeClass("character panel-success").addClass("defender panel-danger").appendTo("#defenderArea");
 					} else {
 						$("#"+character.id).appendTo("#character");
 					}
@@ -115,10 +120,12 @@ $(document).ready(function () {
 	
 
 	$("#attack").on("click", function() {
+		// when character has been selected, character has not been defeated and there are still defenders left
 		if(character !== null && character.healthPoints > 0 && defenders.length > 0) {
 			// created variable to store game status messages
 			var status = "";
 
+			// when defender has been selected
 			if(defender !== null) {
 				// decrease defender HP by character attack power
 				defender.healthPoints -= character.attackPower;
